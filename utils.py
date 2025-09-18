@@ -1,7 +1,7 @@
-# utils.py
 import re
 
 def get_coverage(report_file="luacov.report.out"):
+    """Extrai % de cobertura do relatório do luacov"""
     try:
         with open(report_file, "r", encoding="utf-8") as f:
             text = f.read()
