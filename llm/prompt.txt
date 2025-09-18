@@ -1,0 +1,21 @@
+1. MANIPULATE-METATABLE: Select a table in the code below and add or modify its metatable. Introduce one or more metamethods (such as __index, __newindex, or an arithmetic metamethod like __add) that change the default behavior of access or operation of the table.
+
+2. ALTER-TABLE-BEHAVIOR: Modify an existing table in the code so that it has unexpected behavior. If it is a sequence (array), insert a 'nil' value between its elements. If it is a dictionary (hash map), add keys of mixed types (numbers and strings). Try to access an index inconsistently with the main use of the table.
+
+3. INJECT-COROUTINE: Take part of the logic from the code below and wrap it in a coroutine. Create the coroutine, start it with 'coroutine.resume', and add calls to 'coroutine.yield' at strategic points to pause and resume execution in a complex way.
+
+4. CONFUSE-TYPES: Select a variable in the code and assign it a value of a completely different type than expected. Then, try to use this variable in an operation that would be valid for the original type, forcing a runtime type error (e.g., perform an arithmetic operation with a string or a table).
+
+5. MODIFY-SCOPE: Find a 'local' variable declaration inside a function or block and remove the 'local' keyword to make it a global variable. Alternatively, take a global variable and declare it as 'local' within a more restricted scope to create shadowing.
+
+6. REPLACE-WITH-CONSTANT: Replace an expression in the code below with a valid constant of the same type (e.g., swap a numeric calculation for a number, or a string concatenation for a string literal).
+
+7. INSERT-VARIABLE: Insert a declaration of a new 'local' variable at a random point in the code. Initialize this variable with an expression that uses other variables already existing in that scope.
+
+8. DUPLICATE-DECLARATION: Duplicate a line of code or an instruction within the same block, except for variable declarations.
+
+9. INVERT-OPERATOR: Replace an operator with another compatible one. Swap arithmetic operators (+, -), relational (==, ~=, <, >), or logical (and, or).
+
+10. INJECT-CONTROL-FLOW: Inside a loop ('for' or 'while'), add a 'break' or 'return' statement protected by an 'if' condition based on an existing variable or an auxiliary counter.
+
+11. COMBINE-FUNCTIONS: Take the body of two existing functions in the code and combine them. You can concatenate the bodies or interleave their instructions. The LLM should try to resolve conflicts of local variable names.
