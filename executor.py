@@ -1,25 +1,46 @@
 import subprocess
-from utils import get_coverage
+import os
+import re
 
 class Executor:
-    def __init__(self, lua_path="lua"):
-        self.lua_path = lua_path
+    def __init__(self, lua_bin="lua"):
+        self.lua_bin = lua_bin
 
-    def run_with_luacov(self, script_path):
-        """Executa o script com luacov e retorna a cobertura (%)"""
-        # Limpa relatório anterior
-        subprocess.run(["rm", "-f", "luacov.report.out"], check=False)
+    def run_with_luacov(self, filepath: str) -> float | None:
+        """Executa script Lua com luacov e retorna cobertura (%) ou None se falhar."""
 
-        # Executa script
-        subprocess.run([self.lua_path, "-lluacov", script_path], check=False)
+        # Remove relatórios antigos
+        for f in ("luacov.report.out", "luacov.stats.out"):
+            if os.path.exists(f):
+                os.remove(f)
 
-        # Gera relatório
-        subprocess.run([self.lua_path, "-lluacov", "-e", "require('luacov.runner').shutdown()"], check=False)
+        # 1. Rodar com luacov
+        try:
+            result = subprocess.run(
+                [self.lua_bin, "-lluacov", filepath],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            if result.returncode != 0:
+                print(f"⚠️ Erro executando {filepath}:\n{result.stderr}")
+                return None
+        except Exception as e:
+            print(f"⚠️ Falha ao rodar {filepath}: {e}")
+            return None
 
-        # Extrai cobertura
-        return get_coverage("luacov.report.out")
+        # 2. Gerar relatório
+        subprocess.run(["luacov"], capture_output=True, text=True)
 
-if __name__ == "__main__":
-    ex = Executor()
-    coverage = ex.run_with_luacov("seed_pool/official_suite/hello.lua")
-    print("Cobertura:", coverage)
+        # 3. Ler luacov.report.out
+        if not os.path.exists("luacov.report.out"):
+            return None
+
+        with open("luacov.report.out", "r", encoding="utf-8") as f:
+            report = f.read()
+
+        # 4. Extrair linha "Total    Hits Missed Coverage"
+        match = re.search(r"Total\s+\d+\s+\d+\s+([\d.]+)%", report)
+        if match:
+            return float(match.group(1))
+        return None
